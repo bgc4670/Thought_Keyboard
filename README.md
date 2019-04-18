@@ -4,7 +4,7 @@ Type with your mind!
 A project with NXT (Neurotechnology Exploration Team), an all-undergraduate research team at RIT (Project Lead: Forest).
 
 The goal of this project is to give people with mobility disabilities the ability to easily use computers.
-This is done with a dry EEG (ElectroEncephaloGram) ran through a BCI (Brain Control Interface) That translates the brainwaves in computer readable signals. This is translated through a Pylsl program (incomplete) into the Python Thought_Keyboard program.
+This is done with a dry EEG (ElectroEncephaloGram) ran through a BCI (Brain Control Interface) that translates the brainwaves in computer readable signals. This is translated through a Pylsl program (incomplete) into the Python Thought_Keyboard program.
 The main libraries used are PyQT and pyautogui.
 
 Things to do:
