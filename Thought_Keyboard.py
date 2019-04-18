@@ -1,19 +1,29 @@
 import sys
-import keyboard
+#import keyboard
 import pyautogui
-import threading
-from msvcrt import getch
+#import threading
+#from msvcrt import getch
 from functools import partial
 from PyQt5 import QtGui, QtCore
-from PyQt5.QtCore import Qt
+#from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QMainWindow, QApplication, QPushButton, QLineEdit, QLabel, QVBoxLayout, QHBoxLayout, QToolTip
-
+"""
+This program is the GUI for the Thought Keyboard project using PyQT5 and pyautogui
+:Start Date: 2-22-2019
+:language: Python 3.7
+:author: Brenton Cousins
+"""
 text = ''
 
 
 class Window(QWidget):
 
     def __init__(self, x, text):
+        """
+        Starts the processes to make a new window
+        :param x: The current board (default 0)
+        :param text: The current text (default '')
+        """
         super().__init__()
         QWidget.__init__(self, None, QtCore.Qt.WindowStaysOnTopHint)
         size = pyautogui.size()
@@ -25,7 +35,12 @@ class Window(QWidget):
         self.home(x, text)
 
     def home(self, x, text):
-
+        """
+        Holds the key libraries and creates the window with default settings
+        :param x: The current board (default 0)
+        :param text: The current text (default '')
+        :return:
+        """
         self.l = QLabel()
         self.l.setText(text)
 
@@ -71,25 +86,50 @@ class Window(QWidget):
         self.show()
 
     def btn_press(self, per):
+        """
+        simulates a key press (currently not used)
+        :param per: the given key
+        :return:
+        """
         pyautogui.press(per)
 
     def esc_press(self):
+        """
+        closes the window
+        :return:
+        """
         self.close()
 
     def caps_press(self):
+        """
+        changes the board to upper case letters and refreshes
+        :return:
+        """
         self.close()
         self.__init__(1, text)
 
     def shift_press(self):
+        """
+        changes the board to lower case characters and refreshes
+        :return:
+        """
         self.close()
         self.__init__(0, text)
 
     def alt_press(self):
+        """
+        Changes the board to alt characters and refreshes
+        :return:
+        """
         self.close()
         self.__init__(2, text)
 
     def make_sides(self, y):
-
+        """
+        Creates the sides side buttons
+        :param y: The id for the current board
+        :return:
+        """
         v_box = QVBoxLayout()
 
         x = QPushButton(self.keys_sides[0], self)
@@ -116,7 +156,10 @@ class Window(QWidget):
         return v_box
 
     def lower_case(self):
-
+        """
+        The center board with lower case letters
+        :return:
+        """
         h_box1 = QHBoxLayout()
         h_box2 = QHBoxLayout()
         h_box3 = QHBoxLayout()
@@ -164,7 +207,10 @@ class Window(QWidget):
         return v_box
 
     def upper_case(self):
-
+        """
+        The center board with upper case letters
+        :return:
+        """
         h_box1 = QHBoxLayout()
         h_box2 = QHBoxLayout()
         h_box3 = QHBoxLayout()
@@ -212,7 +258,10 @@ class Window(QWidget):
         return v_box
 
     def alt_case(self):
-
+        """
+        The center board with alternate symbols
+        :return:
+        """
         h_box1 = QHBoxLayout()
         h_box2 = QHBoxLayout()
         h_box3 = QHBoxLayout()
@@ -260,7 +309,12 @@ class Window(QWidget):
         return v_box
 
     def add_text(self, y, t):
-
+        """
+        Adds the given character to the global text
+        :param y: The id for which board to refresh
+        :param t: The text to add
+        :return:
+        """
         global text
 
         text += t
@@ -268,8 +322,13 @@ class Window(QWidget):
         self.close()
         self.__init__(y, text)
 
-    def remove_text(self, y):
 
+    def remove_text(self, y):
+        """
+        Takes the global text and removes the last character
+        :param y: The id for which board to refresh
+        :return:
+        """
         global text
 
         text = text[0:-1]
@@ -277,7 +336,7 @@ class Window(QWidget):
         self.close()
         self.__init__(y, text)
 
-
+""" An attempt to make a keyboard induced mouse
 def mouse():
     pyautogui.moveTo(50, pyautogui.size()[1]-300)
     while True:
@@ -294,7 +353,7 @@ def mouse():
             pyautogui.click()
         elif e.lower() == 'q':
             break
-
+"""
 
 def run():
     app = QApplication(sys.argv)
@@ -304,5 +363,7 @@ def run():
 
 
 run()
+""" Threading for the mouse
 thread2 = threading.Thread(None, mouse, (0,))
 thread2.start()
+"""
