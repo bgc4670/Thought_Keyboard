@@ -1,11 +1,12 @@
 import sys
-#import keyboard
+import keyboard
 import pyautogui
-#import threading
-#from msvcrt import getch
+import threading
+import msvcrt
+from pylsl import StreamInlet, resolve_stream
 from functools import partial
 from PyQt5 import QtGui, QtCore
-#from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QMainWindow, QApplication, QPushButton, QLineEdit, QLabel, QVBoxLayout, QHBoxLayout, QToolTip
 """
 This program is the GUI for the Thought Keyboard project using PyQT5 and pyautogui
@@ -14,6 +15,8 @@ This program is the GUI for the Thought Keyboard project using PyQT5 and pyautog
 :author: Brenton Cousins
 """
 text = ''
+lsample = []
+rsample = []
 
 
 class Window(QWidget):
@@ -45,22 +48,22 @@ class Window(QWidget):
         self.l.setText(text)
 
         self.keys_sides = [
-                    'esc', 'tab', 'capslock', 'shift', 'alt'
+                    'Esc', 'Tab', 'Uppercase', 'Lowercase', 'Altcase'
                     ]
 
         self.keys_low = [
                     'a', 'b', 'c', 'd', 'e', 'f', 'g', '1', '2', '3', 'h', 'i', 'j', 'k', 'l', 'm', 'n', '4', '5', '6',
-                    'o', 'p', 'q', 'r', 's', 't', 'u', '7', '8', '9', 'v', 'w', 'x', 'y', 'z', chr(39), ',', '.', '0', 'Del'
+                    'o', 'p', 'q', 'r', 's', 't', 'u', '7', '8', '9', 'v', 'w', 'x', 'y', 'z', chr(39), ',', '.', '0', 'Enter'
                     ]
 
         self.keys_high = [
                     'A', 'B', 'C', 'D', 'E', 'F', 'G', '1', '2', '3', 'H', 'I', 'J', 'K', 'L', 'M', 'N', '4', '5', '6',
-                    'O', 'P', 'Q', 'R', 'S', 'T', 'U', '7', '8', '9', 'V', 'W', 'X', 'Y', 'Z', chr(39), ',', '.', '0', 'Del'
+                    'O', 'P', 'Q', 'R', 'S', 'T', 'U', '7', '8', '9', 'V', 'W', 'X', 'Y', 'Z', chr(39), ',', '.', '0', 'Enter'
                     ]
 
         self.keys_alt = [
                     '~', '`', '#', '$', '%', '^', '&', '1', '2', '3', '*', '(', ')', '_', '=', '+', '-', '4', '5', '6',
-                    '<', '>', '{', '}', chr(47), '/', '@', '7', '8', '9', ':', ';', '"', '!', '?', chr(39), ',', '.', '0', 'Del'
+                    '<', '>', '{', '}', chr(47), '/', '@', '7', '8', '9', ':', ';', '"', '!', '?', chr(39), ',', '.', '0', 'Enter'
                     ]
 
         v_box1 = QVBoxLayout()
@@ -336,34 +339,60 @@ class Window(QWidget):
         self.close()
         self.__init__(y, text)
 
-""" An attempt to make a keyboard induced mouse
-def mouse():
-    pyautogui.moveTo(50, pyautogui.size()[1]-300)
+
+def move():
+#    print("qwerty")
+
     while True:
-        e = getch()
-        if e.lower() == 'w':
+        if msvcrt.getch() == 'w':
+#           print("w")
             pyautogui.move(0, -10)
-        elif e.lower() == 'a':
+        elif msvcrt.getch() == 'a':
             pyautogui.move(-25, 0)
-        elif e.lower() == 'd':
+        elif msvcrt.getch() == 'd':
             pyautogui.move(25, 0)
-        elif e.lower() == 's':
+        elif msvcrt.getch() == 's':
             pyautogui.move(0, 10)
-        elif e.lower() == 'e':
+        elif msvcrt.getch() == 'e':
             pyautogui.click()
-        elif e.lower() == 'q':
+        elif msvcrt.getch() == 'q':
             break
-"""
+
+
+def eeg_in():
+
+    global rsample
+    global lsample
+
+    # first resolve a LiSiLity stream on the lab network
+    print('Looking for a LiSiLity stream...')
+    streams = resolve_stream('type', 'LiSiLity.Angles')
+
+    # create a new inlet to read from the stream
+    inlet_left = StreamInlet(streams[0])
+    inlet_right = StreamInlet(streams[1])
+
+    while True:
+        # get a new sample (you can also omit the timestamp part if you’re not
+        # interested in it)
+        lsample, ltimestamp = inlet_left.pull_sample()
+        rsample, rtimestamp = inlet_right.pull_sample()
+        for i in range(len(lsample)):
+            lsample[i] = round(lsample[i], 2)
+        for i in range(len(rsample)):
+            rsample[i] = round(rsample[i], 2)
+        print(round(ltimestamp, 0), lsample, rsample)
+
 
 def run():
     app = QApplication(sys.argv)
     window = Window(0, '')
-
     sys.exit(app.exec_())
 
 
-run()
-""" Threading for the mouse
-thread2 = threading.Thread(None, mouse, (0,))
+pyautogui.moveTo(50, pyautogui.size()[1] - 215)
+thread2 = threading.Thread(None, eeg_in)
 thread2.start()
-"""
+thread3 = threading.Thread(None, move)
+thread3.start()
+run()
