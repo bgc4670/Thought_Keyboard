@@ -298,15 +298,15 @@ class Window(QWidget):
 
 def move():
     global t
-    if rsample and lsample == 1:
+    if lsample == 1:
         pyautogui.move(-1, 0)
-    elif rsample and lsample == 2:
+    elif lsample == 2:
         pyautogui.move(1, 0)
-    elif rsample and lsample == 3:
+    elif rsample == 1:
         pyautogui.move(0, -1)
-    elif rsample and lsample == 4:
+    elif rsample == 2:
         pyautogui.move(0, 1)
-    elif rsample and lsample == 6:
+    elif rsample or lsample == 3:
         if time.time()-t > 3:
             pyautogui.click()
             t = time.time()
