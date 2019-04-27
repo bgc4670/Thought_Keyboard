@@ -14,8 +14,8 @@ This program is the GUI for the Thought Keyboard project using PyQT5 and pyautog
 """
 text = ''
 t = 0
-lsample = []
-rsample = []
+lsample = 0
+rsample = 0
 
 
 class Window(QWidget):
