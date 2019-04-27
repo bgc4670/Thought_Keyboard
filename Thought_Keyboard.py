@@ -48,7 +48,7 @@ class Window(QWidget):
         self.l.setText(text)
 
         self.keys_sides = [
-                    'Esc', 'Tab', 'Uppercase', 'Lowercase', 'Altcase'
+                    'Shift+Tab', 'Tab', 'Case Shift', 'Clear', 'Altcase'
                     ]
 
         self.keys_low = [
@@ -97,14 +97,21 @@ class Window(QWidget):
 
         global text
 
-        if per == "Esc":
-            sys.exit(self.exec_())
-        elif per == "Lowercase":
+        if per == "Shift+Tab":
+            pyautogui.hotkey('Alt', 'Tab')
+            pyautogui.hotkey('Shift', 'Tab')
+        elif per == "Capslock":
+            if y == 1 or y == 2:
+                self.close()
+                self.__init__(0)
+            elif y ==0:
+                self.close()
+                self.__init__(1)
+        elif per == "Clear":
+            text = ''
             self.close()
-            self.__init__(0)
-        elif per == "Uppercase":
-            self.close()
-            self.__init__(1)
+            self.__init__(y)
+
         elif per == "Altcase":
             self.close()
             self.__init__(2)
