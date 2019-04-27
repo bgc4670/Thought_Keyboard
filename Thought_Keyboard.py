@@ -1,13 +1,11 @@
 import sys
-import os
 import pyautogui
 import threading
-import msvcrt
+import time
 from pylsl import StreamInlet, resolve_stream
 from functools import partial
-from PyQt5 import QtGui, QtCore
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QMainWindow, QApplication, QPushButton, QLineEdit, QLabel, QVBoxLayout, QHBoxLayout, QToolTip
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QWidget, QApplication, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QToolTip
 """
 This program is the GUI for the Thought Keyboard project using PyQT5 and pyautogui
 :Start Date: 2-22-2019
@@ -15,6 +13,7 @@ This program is the GUI for the Thought Keyboard project using PyQT5 and pyautog
 :author: Brenton Cousins
 """
 text = ''
+t = 0
 lsample = []
 rsample = []
 
@@ -298,22 +297,22 @@ class Window(QWidget):
 
 
 def move():
-#    print("qwerty")
-
+    global t
     while True:
-        if msvcrt.getch() == 'w':
+        if rsample and lsample == 1:
 #           print("w")
-            pyautogui.move(0, -10)
-        elif msvcrt.getch() == 'a':
             pyautogui.move(-25, 0)
-        elif msvcrt.getch() == 'd':
+        elif rsample and lsample == 2:
             pyautogui.move(25, 0)
-        elif msvcrt.getch() == 's':
+        elif rsample and lsample == 3:
+            pyautogui.move(0, -10)
+        elif rsample and lsample == 4:
             pyautogui.move(0, 10)
-        elif msvcrt.getch() == 'e':
-            pyautogui.click()
-        elif msvcrt.getch() == 'q':
-            break
+        elif rsample and lsample == 6:
+            if time.time()-t > 3:
+                pyautogui.click()
+                t = time.time()
+
 
 
 def eeg_in():
@@ -342,17 +341,15 @@ def eeg_in():
 
 
 def run():
+    pyautogui.moveTo(50, pyautogui.size()[1] - 215)
     app = QApplication(sys.argv)
     window = Window(0)
     sys.exit(app.exec_())
 
 
-pyautogui.moveTo(50, pyautogui.size()[1] - 215)
-
 thread1 = threading.Thread(None, eeg_in)
 thread1.start()
 thread2 = threading.Thread(None, move)
 thread2.start()
-
-
-run()
+thread3 = threading.Thread(None, run)
+thread3.start()
