@@ -48,7 +48,7 @@ class Window(QWidget):
         self.l.setText(text)
 
         self.keys_sides = [
-                    'Shift+Tab', 'Tab', 'Case Shift', 'Clear', 'Altcase'
+                    'Shift+Tab', 'Tab', 'Case Shift', 'Altcase', 'Clear'
                     ]
 
         self.keys_low = [
@@ -100,7 +100,7 @@ class Window(QWidget):
         if per == "Shift+Tab":
             pyautogui.hotkey('Alt', 'Tab')
             pyautogui.hotkey('Shift', 'Tab')
-        elif per == "Capslock":
+        elif per == "Case Shift":
             if y == 1 or y == 2:
                 self.close()
                 self.__init__(0)
