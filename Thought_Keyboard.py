@@ -298,20 +298,18 @@ class Window(QWidget):
 
 def move():
     global t
-    while True:
-        if rsample and lsample == 1:
-#           print("w")
-            pyautogui.move(-25, 0)
-        elif rsample and lsample == 2:
-            pyautogui.move(25, 0)
-        elif rsample and lsample == 3:
-            pyautogui.move(0, -10)
-        elif rsample and lsample == 4:
-            pyautogui.move(0, 10)
-        elif rsample and lsample == 6:
-            if time.time()-t > 3:
-                pyautogui.click()
-                t = time.time()
+    if rsample and lsample == 1:
+        pyautogui.move(-25, 0)
+    elif rsample and lsample == 2:
+        pyautogui.move(25, 0)
+    elif rsample and lsample == 3:
+        pyautogui.move(0, -10)
+    elif rsample and lsample == 4:
+        pyautogui.move(0, 10)
+    elif rsample and lsample == 6:
+        if time.time()-t > 3:
+            pyautogui.click()
+            t = time.time()
 
 
 
@@ -338,6 +336,7 @@ def eeg_in():
         for i in range(len(rsample)):
             rsample[i] = round(rsample[i], 2)
         print(round(ltimestamp, 0), lsample, rsample)
+        move()
 
 
 def run():
