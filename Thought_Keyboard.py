@@ -21,7 +21,7 @@ rsample = []
 
 class Window(QWidget):
 
-    def __init__(self, x, text):
+    def __init__(self, x):
         """
         Starts the processes to make a new window
         :param x: The current board (default 0)
@@ -35,9 +35,9 @@ class Window(QWidget):
         self.setGeometry(0, ycord-320, xcord, ycord/4)
         self.setWindowTitle('Thought Keyboard')
 
-        self.home(x, text)
+        self.home(x)
 
-    def home(self, x, text):
+    def home(self, x):
         """
         Holds the key libraries and creates the window with default settings
         :param x: The current board (default 0)
@@ -88,67 +88,56 @@ class Window(QWidget):
 
         self.show()
 
-    def btn_press(self, per):
+    def btn_press(self, per, y):
         """
         simulates a key press (currently not used)
         :param per: the given key
         :return:
         """
-        pyautogui.press(per)
-
-    def esc_press(self):
-        """
-        closes the window
-        :return:
-        """
-        self.close()
-
-    def caps_press(self):
-        """
-        changes the board to upper case letters and refreshes
-        :return:
-        """
-        self.close()
-        self.__init__(1, text)
-
-    def shift_press(self):
-        """
-        changes the board to lower case characters and refreshes
-        :return:
-        """
-        self.close()
-        self.__init__(0, text)
-
-    def alt_press(self):
-        """
-        Changes the board to alt characters and refreshes
-        :return:
-        """
-        self.close()
-        self.__init__(2, text)
-
-    def enter_press(self, y):
 
         global text
 
-        os.system("TASKKILL /F /IM notepad.exe")
-
-        f = open("file.txt", "a+")
-        r = text.split(' ')
-        t = ''
-        for i in range(0, len(r)):
-            if len(t+r[i]) > 200:
-                t += '\n' + r[i] + ' '
-            else:
-                t += r[i] + ' '
-        f.write(t)
-        f.close()
-
-        threading.Thread(None, partial(os.system, "notepad.exe file.txt")).start()
-
-        self.close()
-        text = ''
-        self.__init__(y, text)
+        if per == "Esc":
+            sys.exit(self.exec_())
+        elif per == "Lowercase":
+            self.close()
+            self.__init__(0)
+        elif per == "Uppercase":
+            self.close()
+            self.__init__(1)
+        elif per == "Altcase":
+            self.close()
+            self.__init__(2)
+        elif per == "Enter":
+            text += "\n"
+            pyautogui.hotkey('Alt', 'Tab')
+            pyautogui.press("enter")
+            self.close()
+            self.__init__(y)
+        elif per == "Tab":
+            text += "     "
+            pyautogui.hotkey('Alt', 'Tab')
+            pyautogui.press("tab")
+            self.close()
+            self.__init__(y)
+        elif per == "backspace":
+            text = text[0:-1]
+            pyautogui.hotkey('Alt', 'Tab')
+            pyautogui.press(per)
+            self.close()
+            self.__init__(y)
+        elif per == "space":
+            text += " "
+            pyautogui.hotkey('Alt', 'Tab')
+            pyautogui.press(per)
+            self.close()
+            self.__init__(y)
+        else:
+            text += per
+            pyautogui.hotkey('Alt', 'Tab')
+            pyautogui.press(per)
+            self.close()
+            self.__init__(y)
 
     def make_sides(self, y):
         """
@@ -158,26 +147,10 @@ class Window(QWidget):
         """
         v_box = QVBoxLayout()
 
-        x = QPushButton(self.keys_sides[0], self)
-        x.clicked.connect(self.esc_press)
-        v_box.addWidget(x)
-
-        x = QPushButton(self.keys_sides[1], self)
-        x.clicked.connect(partial(self.btn_press, self.keys_sides[1]))
-        x.clicked.connect(partial(self.add_text, y, '    '))
-        v_box.addWidget(x)
-
-        x = QPushButton(self.keys_sides[2], self)
-        x.clicked.connect(self.caps_press)
-        v_box.addWidget(x)
-
-        x = QPushButton(self.keys_sides[3], self)
-        x.clicked.connect(self.shift_press)
-        v_box.addWidget(x)
-
-        x = QPushButton(self.keys_sides[4], self)
-        x.clicked.connect(self.alt_press)
-        v_box.addWidget(x)
+        for s in self.keys_sides:
+            x = QPushButton(s, self)
+            x.clicked.connect(partial(self.btn_press, s, y))
+            v_box.addWidget(x, y)
 
         return v_box
 
@@ -195,33 +168,27 @@ class Window(QWidget):
 
         for i in range(0, 10):
             x = QPushButton(self.keys_low[i], self)
-            x.clicked.connect(partial(self.btn_press, self.keys_low[i]))
-            x.clicked.connect(partial(self.add_text, 0, self.keys_low[i]))
+            x.clicked.connect(partial(self.btn_press, self.keys_low[i], 0))
             h_box1.addWidget(x)
         for i in range(10, 20):
             x = QPushButton(self.keys_low[i], self)
-            x.clicked.connect(partial(self.btn_press, self.keys_low[i]))
-            x.clicked.connect(partial(self.add_text, 0, self.keys_low[i]))
+            x.clicked.connect(partial(self.btn_press, self.keys_low[i], 0))
             h_box2.addWidget(x)
         for i in range(20, 30):
             x = QPushButton(self.keys_low[i], self)
-            x.clicked.connect(partial(self.btn_press, self.keys_low[i]))
-            x.clicked.connect(partial(self.add_text, 0, self.keys_low[i]))
+            x.clicked.connect(partial(self.btn_press, self.keys_low[i], 0))
             h_box3.addWidget(x)
         for i in range(30, 40):
             x = QPushButton(self.keys_low[i], self)
-            x.clicked.connect(partial(self.btn_press, self.keys_low[i]))
-            x.clicked.connect(partial(self.add_text, 0, self.keys_low[i]))
+            x.clicked.connect(partial(self.btn_press, self.keys_low[i], 0))
             h_box4.addWidget(x)
 
         b = QPushButton('<--Backspace', self)
-        b.clicked.connect(partial(self.btn_press, 'backspace'))
-        b.clicked.connect(partial(self.remove_text, 0))
+        b.clicked.connect(partial(self.btn_press, 'backspace', 0))
         h_box5.addWidget(b)
 
         s = QPushButton('_Space_', self)
-#        s.clicked.connect(partial(self.btn_press, 'space'))
-        s.clicked.connect(partial(self.add_text, 0, ' '))
+        s.clicked.connect(partial(self.btn_press, 'space', 0))
         h_box5.addWidget(s)
 
         v_box.addLayout(h_box1)
@@ -246,33 +213,27 @@ class Window(QWidget):
 
         for i in range(0, 10):
             x = QPushButton(self.keys_high[i], self)
-            x.clicked.connect(partial(self.btn_press, self.keys_high[i]))
-            x.clicked.connect(partial(self.add_text, 1, self.keys_high[i]))
+            x.clicked.connect(partial(self.btn_press, self.keys_high[i], 1))
             h_box1.addWidget(x)
         for i in range(10, 20):
             x = QPushButton(self.keys_high[i], self)
-            x.clicked.connect(partial(self.btn_press, self.keys_high[i]))
-            x.clicked.connect(partial(self.add_text, 1, self.keys_high[i]))
+            x.clicked.connect(partial(self.btn_press, self.keys_high[i], 1))
             h_box2.addWidget(x)
         for i in range(20, 30):
             x = QPushButton(self.keys_high[i], self)
-            x.clicked.connect(partial(self.btn_press, self.keys_high[i]))
-            x.clicked.connect(partial(self.add_text, 1, self.keys_high[i]))
+            x.clicked.connect(partial(self.btn_press, self.keys_high[i], 1))
             h_box3.addWidget(x)
         for i in range(30, 40):
             x = QPushButton(self.keys_high[i], self)
-            x.clicked.connect(partial(self.btn_press, self.keys_high[i]))
-            x.clicked.connect(partial(self.add_text, 1, self.keys_high[i]))
+            x.clicked.connect(partial(self.btn_press, self.keys_high[i], 1))
             h_box4.addWidget(x)
 
         b = QPushButton('<--Backspace', self)
-        b.clicked.connect(partial(self.btn_press, 'backspace'))
-        b.clicked.connect(partial(self.remove_text, 1))
+        b.clicked.connect(partial(self.btn_press, 'backspace', 1))
         h_box5.addWidget(b)
 
         s = QPushButton('_Space_', self)
-#        s.clicked.connect(partial(self.btn_press, 'space'))
-        s.clicked.connect(partial(self.add_text, 1, ' '))
+        s.clicked.connect(partial(self.btn_press, 'space', 1))
         h_box5.addWidget(s)
 
         v_box.addLayout(h_box1)
@@ -297,33 +258,27 @@ class Window(QWidget):
 
         for i in range(0, 10):
             x = QPushButton(self.keys_alt[i], self)
-            x.clicked.connect(partial(self.btn_press, self.keys_alt[i]))
-            x.clicked.connect(partial(self.add_text, 2, self.keys_alt[i]))
+            x.clicked.connect(partial(self.btn_press, self.keys_alt[i], 2))
             h_box1.addWidget(x)
         for i in range(10, 20):
             x = QPushButton(self.keys_alt[i], self)
-            x.clicked.connect(partial(self.btn_press, self.keys_alt[i]))
-            x.clicked.connect(partial(self.add_text, 2, self.keys_alt[i]))
+            x.clicked.connect(partial(self.btn_press, self.keys_alt[i], 2))
             h_box2.addWidget(x)
         for i in range(20, 30):
             x = QPushButton(self.keys_alt[i], self)
-            x.clicked.connect(partial(self.btn_press, self.keys_alt[i]))
-            x.clicked.connect(partial(self.add_text, 2, self.keys_alt[i]))
+            x.clicked.connect(partial(self.btn_press, self.keys_alt[i], 2))
             h_box3.addWidget(x)
         for i in range(30, 40):
             x = QPushButton(self.keys_alt[i], self)
-            x.clicked.connect(partial(self.btn_press, self.keys_alt[i]))
-            x.clicked.connect(partial(self.add_text, 2, self.keys_alt[i]))
+            x.clicked.connect(partial(self.btn_press, self.keys_alt[i], 2))
             h_box4.addWidget(x)
 
         b = QPushButton('<--Backspace', self)
-        b.clicked.connect(partial(self.btn_press, 'backspace'))
-        b.clicked.connect(partial(self.remove_text, 2))
+        b.clicked.connect(partial(self.btn_press, 'backspace', 2))
         h_box5.addWidget(b)
 
         s = QPushButton('_Space_', self)
-#        s.clicked.connect(partial(self.btn_press, 'space'))
-        s.clicked.connect(partial(self.add_text, 2, ' '))
+        s.clicked.connect(partial(self.btn_press, 'space', 2))
         h_box5.addWidget(s)
 
         v_box.addLayout(h_box1)
@@ -333,37 +288,6 @@ class Window(QWidget):
         v_box.addLayout(h_box5)
 
         return v_box
-
-    def add_text(self, y, t):
-        """
-        Adds the given character to the global text
-        :param y: The id for which board to refresh
-        :param t: The text to add
-        :return:
-        """
-        global text
-
-        if t == 'Enter':
-            self.enter_press(y)
-        else:
-            text += t
-
-        self.close()
-        self.__init__(y, text)
-
-
-    def remove_text(self, y):
-        """
-        Takes the global text and removes the last character
-        :param y: The id for which board to refresh
-        :return:
-        """
-        global text
-
-        text = text[0:-1]
-
-        self.close()
-        self.__init__(y, text)
 
 
 def move():
@@ -412,12 +336,10 @@ def eeg_in():
 
 def run():
     app = QApplication(sys.argv)
-    window = Window(0, '')
+    window = Window(0)
     sys.exit(app.exec_())
 
 
-f = open('file.txt', 'w+')
-f.close()
 pyautogui.moveTo(50, pyautogui.size()[1] - 215)
 
 thread1 = threading.Thread(None, eeg_in)
