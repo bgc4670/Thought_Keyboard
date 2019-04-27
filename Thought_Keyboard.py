@@ -1,5 +1,5 @@
 import sys
-import keyboard
+import os
 import pyautogui
 import threading
 import msvcrt
@@ -53,17 +53,17 @@ class Window(QWidget):
 
         self.keys_low = [
                     'a', 'b', 'c', 'd', 'e', 'f', 'g', '1', '2', '3', 'h', 'i', 'j', 'k', 'l', 'm', 'n', '4', '5', '6',
-                    'o', 'p', 'q', 'r', 's', 't', 'u', '7', '8', '9', 'v', 'w', 'x', 'y', 'z', chr(39), ',', '.', '0', 'Clear'
+                    'o', 'p', 'q', 'r', 's', 't', 'u', '7', '8', '9', 'v', 'w', 'x', 'y', 'z', chr(39), ',', '.', '0', 'Enter'
                     ]
 
         self.keys_high = [
                     'A', 'B', 'C', 'D', 'E', 'F', 'G', '1', '2', '3', 'H', 'I', 'J', 'K', 'L', 'M', 'N', '4', '5', '6',
-                    'O', 'P', 'Q', 'R', 'S', 'T', 'U', '7', '8', '9', 'V', 'W', 'X', 'Y', 'Z', chr(39), ',', '.', '0', 'Clear'
+                    'O', 'P', 'Q', 'R', 'S', 'T', 'U', '7', '8', '9', 'V', 'W', 'X', 'Y', 'Z', chr(39), ',', '.', '0', 'Enter'
                     ]
 
         self.keys_alt = [
                     '~', '`', '#', '$', '%', '^', '&', '1', '2', '3', '*', '(', ')', '_', '=', '+', '-', '4', '5', '6',
-                    '<', '>', '{', '}', chr(47), '/', '@', '7', '8', '9', ':', ';', '"', '!', '?', chr(39), ',', '.', '0', 'Clear'
+                    '<', '>', '{', '}', chr(47), '/', '@', '7', '8', '9', ':', ';', '"', '!', '?', chr(39), ',', '.', '0', 'Enter'
                     ]
 
         v_box1 = QVBoxLayout()
@@ -126,6 +126,29 @@ class Window(QWidget):
         """
         self.close()
         self.__init__(2, text)
+
+    def enter_press(self, y):
+
+        global text
+
+        os.system("TASKKILL /F /IM notepad.exe")
+
+        f = open("file.txt", "a+")
+        r = text.split(' ')
+        t = ''
+        for i in range(0, len(r)):
+            if len(t+r[i]) > 200:
+                t += '\n' + r[i] + ' '
+            else:
+                t += r[i] + ' '
+        f.write(t)
+        f.close()
+
+        threading.Thread(None, partial(os.system, "notepad.exe file.txt")).start()
+
+        self.close()
+        text = ''
+        self.__init__(y, text)
 
     def make_sides(self, y):
         """
@@ -320,8 +343,8 @@ class Window(QWidget):
         """
         global text
 
-        if (t == 'Clear'):
-            text = ''
+        if t == 'Enter':
+            self.enter_press(y)
         else:
             text += t
 
@@ -393,9 +416,14 @@ def run():
     sys.exit(app.exec_())
 
 
+f = open('file.txt', 'w+')
+f.close()
 pyautogui.moveTo(50, pyautogui.size()[1] - 215)
-thread2 = threading.Thread(None, eeg_in)
+
+thread1 = threading.Thread(None, eeg_in)
+thread1.start()
+thread2 = threading.Thread(None, move)
 thread2.start()
-thread3 = threading.Thread(None, move)
-thread3.start()
+
+
 run()
