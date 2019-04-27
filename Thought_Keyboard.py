@@ -307,7 +307,7 @@ def move():
     elif rsample == 2:
         pyautogui.move(0, 1)
     elif rsample or lsample == 3:
-        if time.time()-t > 3:
+        if time.time()-t > 1:
             pyautogui.click()
             t = time.time()
 
