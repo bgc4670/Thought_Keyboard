@@ -3,7 +3,7 @@ Type with your mind!
 
 @author: Brenton Cousins
 
-A project with NXT (Neurotechnology Exploration Team), an all-undergraduate research team at RIT (Project Lead: Forest).
+A project with NXT (Neurotechnology Exploration Team), an all-undergraduate research team at RIT (Project Lead: Brenton Cousins).
 
 The goal of this project is to give people with motor disabilities the ability to easily use computers.
 This is done with a dry EEG (ElectroEncephaloGram) ran through a BCI (Brain Control Interface) that translates the brainwaves in computer readable signals. This is translated through a Pylsl program into the Python Thought_Keyboard program.
